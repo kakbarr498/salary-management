@@ -37,6 +37,7 @@ async function seed(count = 10000) {
     insertMany(rows);
     console.log(`Inserted ${Math.min(upper, count)} / ${count}`);
   }
+  return count;
 }
 
 if (require.main === module) {
