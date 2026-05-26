@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import EmployeeList, { Employee } from './EmployeeList';
 import AddEmployeeForm from './AddEmployeeForm';
 import '../styles.css';
+import CountryInsights from './CountryInsights';
 
 export default function EmployeeListContainer() {
   const [employees, setEmployees] = useState<Employee[] | null>(null);
@@ -39,7 +40,15 @@ export default function EmployeeListContainer() {
         </div>
       </div>
       {showAdd && <AddEmployeeForm onAdded={() => { setShowAdd(false); refresh(); }} />}
-      <EmployeeList employees={employees} />
+      <div style={{display:'flex',gap:16,alignItems:'flex-start'}}>
+        <div style={{flex:1}}>
+          <EmployeeList employees={employees} onChanged={() => refresh()} />
+        </div>
+        <aside style={{width:260}}>
+          {/* lightweight insights: default to first employee country if present */}
+          {employees.length > 0 && <CountryInsights country={employees[0].country} />}
+        </aside>
+      </div>
     </div>
   );
 }

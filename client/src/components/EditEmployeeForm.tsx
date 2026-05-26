@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Employee } from './EmployeeList';
 
-export default function EditEmployeeForm({ employee }: { employee: Employee }) {
+export default function EditEmployeeForm({ employee, onSaved }: { employee: Employee; onSaved?: () => void }) {
   const [first_name, setFirstName] = useState(employee.first_name);
   const [last_name, setLastName] = useState(employee.last_name);
   const [job_title, setJobTitle] = useState(employee.job_title);
@@ -11,7 +11,8 @@ export default function EditEmployeeForm({ employee }: { employee: Employee }) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const body = { first_name, last_name, job_title, country, salary: Number(salary) };
-    await fetch(`/api/employees/${employee.id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+  const res = await fetch(`/api/employees/${employee.id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+  if (res.ok && onSaved) onSaved();
   };
 
   return (

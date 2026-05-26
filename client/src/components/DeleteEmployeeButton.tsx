@@ -1,9 +1,10 @@
 import React from 'react';
 
-export default function DeleteEmployeeButton({ id }: { id: number }) {
+export default function DeleteEmployeeButton({ id, onDeleted }: { id: number; onDeleted?: () => void }) {
   const handleDelete = async () => {
-    await fetch(`/api/employees/${id}`, { method: 'DELETE' });
+    const res = await fetch(`/api/employees/${id}`, { method: 'DELETE' });
+    if (res.ok && onDeleted) onDeleted();
   };
 
-  return <button onClick={handleDelete}>Delete</button>;
+  return <button className="btn-secondary" onClick={handleDelete}>Delete</button>;
 }
