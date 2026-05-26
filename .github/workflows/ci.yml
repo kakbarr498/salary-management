@@ -1,0 +1,28 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install server deps
+        working-directory: ./server
+        run: npm ci
+      - name: Run server tests
+        working-directory: ./server
+        run: npm test
+      - name: Install client deps
+        working-directory: ./client
+        run: npm ci
+      - name: Run client tests
+        working-directory: ./client
+        run: npm test
