@@ -49,7 +49,16 @@ export function countrySalaryInsights(country: string) {
   const min = db.prepare('SELECT MIN(salary) as value FROM employees WHERE country = ?').get(country).value || 0;
   const max = db.prepare('SELECT MAX(salary) as value FROM employees WHERE country = ?').get(country).value || 0;
   const avg = db.prepare('SELECT AVG(salary) as value FROM employees WHERE country = ?').get(country).value || 0;
-  return { min, max, avg };
+  const count = db.prepare('SELECT COUNT(*) as c FROM employees WHERE country = ?').get(country).c || 0;
+  // median: fetch sorted salaries and compute median
+  const rows: { salary: number }[] = db.prepare('SELECT salary FROM employees WHERE country = ? ORDER BY salary').all(country);
+  let median = 0;
+  if (rows.length > 0) {
+    const mid = Math.floor(rows.length / 2);
+    if (rows.length % 2 === 1) median = rows[mid].salary;
+    else median = (rows[mid - 1].salary + rows[mid].salary) / 2;
+  }
+  return { min, max, avg, count, median };
 }
 
 export function jobTitleAverageInCountry(job_title: string, country: string) {
